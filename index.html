@@ -1,4 +1,55 @@
-<form action="scrape" method="GET">
-  <input type="url" name="url" placeholder="Enter URL">
-  <button type="submit">Scrape</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Scraper</title>
+</head>
+<body>
+    <h2>Simple Web Scraper</h2>
+    <form action="scrape" method="GET">
+        <label>URL: <input type="url" name="url" required></label><br><br>
+
+        <label><input type="checkbox" name="options" value="title"> Title</label><br>
+        <label><input type="checkbox" name="options" value="links"> Links</label><br>
+        <label><input type="checkbox" name="options" value="images"> Images</label><br><br>
+
+        <button type="submit">Scrape</button>
+    </form>
+
+    <br>
+    <button onclick="downloadCSV()">Download CSV</button>
+    <button onclick="downloadJSON()">Download JSON</button>
+
+    <script>
+        function downloadCSV() {
+            let csv = '';
+            const rows = document.querySelectorAll("table tr");
+            rows.forEach(row => {
+                const cols = row.querySelectorAll("td, th");
+                const rowData = Array.from(cols).map(col => `"${col.innerText}"`).join(",");
+                csv += rowData + "\n";
+            });
+
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "scraped_data.csv";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function downloadJSON() {
+            const jsonText = document.getElementById("jsonData").textContent;
+            const blob = new Blob([jsonText], { type: "application/json" });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "scraped_data.json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
